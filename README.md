@@ -1,8 +1,22 @@
-defmodule JViewer do
-  @moduledoc """
-  JViewer is an excellent way to declaratively represent elixir data in a JSON encodable format.
+# JViewer
 
-  Imagine you have an application that stores data in a relational database.
+JViewer is an excellent way to declaratively represent elixir data in a JSON encodable format.
+
+## Installation
+
+The package can be installed by adding `j_viewer` to your list of dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:j_viewer, "~> 0.1.1"}
+  ]
+end
+```
+
+## Introduction
+
+ Imagine you have an application that stores data in a relational database.
   When your application grows large, data becomes to have many dependencis.
 
   For example, you are developing an online store, where you have a cart.
@@ -180,63 +194,8 @@ defmodule JViewer do
       ]
     }
   ```
-  """
 
-  @spec represent(map, JViewer.Types.Object.t()) :: map()
-  @doc """
-  Represents data in a JSON encodable format according to __return_schema__.
+## Documentation
+For more information, see [https://hexdocs.pm/j_viewer]
 
-  If data cannot be represented, an exception is thrown.
-  """
-  def represent(%{} = data, %JViewer.Types.Object{} = return_schema) do
-    JViewer.Types.Object.apply_schema(return_schema, data)
-  end
 
-  # Functions for building return schemas.
-
-  @spec object(keyword()) :: struct()
-  def object(args) do
-    build_struct(%JViewer.Types.Object{}, args)
-  end
-
-  @spec field(keyword()) :: struct()
-  def field(args) do
-    build_struct(%JViewer.Types.Object.Field{}, args)
-  end
-
-  @spec number(keyword()) :: struct()
-  def number(args \\ []) do
-    build_struct(%JViewer.Types.Number{}, args)
-  end
-
-  @spec boolean(keyword()) :: struct()
-  def boolean(args \\ []) do
-    build_struct(%JViewer.Types.Boolean{}, args)
-  end
-
-  @spec array(keyword()) :: struct()
-  def array(args) do
-    build_struct(%JViewer.Types.Array{}, args)
-  end
-
-  @spec string(keyword()) :: struct()
-  def string(args \\ []) do
-    build_struct(%JViewer.Types.String{}, args)
-  end
-
-  defp build_struct(type, args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
-
-    type
-    |> Map.keys()
-    |> Enum.reduce(type, fn key, res ->
-      value =
-        case Keyword.get(args, key) do
-          nil -> Map.get(type, key)
-          v -> v
-        end
-
-      Map.put(res, key, value)
-    end)
-  end
-end
