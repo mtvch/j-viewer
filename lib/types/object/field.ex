@@ -17,15 +17,20 @@ defmodule JViewer.Types.Object.Field do
           source_key: String.t() | atom() | nil,
           type: struct(),
           description: String.t() | nil,
-          handler: atom() | nil,
+          handler: function() | boolean() | nil,
           handler_params: any(),
           allow_null: boolean()
         }
 
   @impl true
   def apply_schema(%__MODULE__{handler: handler, handler_params: params}, super_data)
-      when is_atom(handler) and not is_nil(handler) do
-    handler.call(super_data, params)
+      when is_function(handler, 2) do
+    handler.(super_data, params)
+  end
+
+  @impl true
+  def apply_schema(%__MODULE__{handler: true, key: key}, _super_data) do
+    raise JViewer.FieldException, {:handler_not_found, key}
   end
 
   @impl true
