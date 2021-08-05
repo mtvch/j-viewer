@@ -12,7 +12,8 @@ defmodule JViewer.Test do
                    ),
                    field(
                      key: "currency_code",
-                     source_key: "currency"
+                     source_key: "currency",
+                     handler: true
                    ),
                    field(
                      key: "coupon_id",
@@ -46,7 +47,7 @@ defmodule JViewer.Test do
                                      fields: [
                                        field(
                                          key: "title",
-                                         type: string()
+                                         handler: true
                                        )
                                      ]
                                    )
