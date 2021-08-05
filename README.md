@@ -108,7 +108,7 @@ end
   defmodule MyAppWeb.CartPresenter do
     import JViewer
 
-    @return_schema object(
+    @schema object(
                    fields: [
                      field(
                        key: "id",
@@ -167,13 +167,13 @@ end
                  )
 
     def view(%MyApp.Cart{} = cart, %{lang: lang}) do
-      return_schema =
-        JViewer.Handler.put_params(@return_schema, ["items", "product", "title"], %{
+      schema =
+        JViewer.Handler.put_params(@schema, ["items", "product", "title"], %{
           key: :title,
           lang: lang
         })
 
-      represent(cart, return_schema)
+      represent(cart, schema)
     end
   end
   ```

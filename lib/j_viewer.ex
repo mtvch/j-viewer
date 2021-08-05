@@ -94,7 +94,7 @@ defmodule JViewer do
   defmodule MyAppWeb.CartPresenter do
     import JViewer
 
-    @return_schema object(
+    @schema object(
                    fields: [
                      field(
                        key: "id",
@@ -153,13 +153,13 @@ defmodule JViewer do
                  )
 
     def view(%MyApp.Cart{} = cart, %{lang: lang}) do
-      return_schema =
-        JViewer.Handler.put_params(@return_schema, ["items", "product", "title"], %{
+      schema =
+        JViewer.Handler.put_params(@schema, ["items", "product", "title"], %{
           key: :title,
           lang: lang
         })
 
-      represent(cart, return_schema)
+      represent(cart, schema)
     end
   end
   ```
@@ -184,12 +184,102 @@ defmodule JViewer do
 
   @spec represent(map, JViewer.Types.Object.t()) :: map()
   @doc """
-  Represents data in a JSON encodable format according to __return_schema__.
+  Represents data in a JSON encodable format according to __schema__.
 
   If data cannot be represented, an exception is thrown.
   """
-  def represent(%{} = data, %JViewer.Types.Object{} = return_schema) do
-    JViewer.Types.Object.apply_schema(return_schema, data)
+  def represent(%{} = data, %JViewer.Types.Object{} = schema) do
+    JViewer.Types.Object.apply_schema(schema, data)
+  end
+
+  @doc """
+  Puts __handler__ in __schema's field__ under given __path__.
+
+  ## Example
+      iex> import JViewer
+      ...>
+      iex> schema =
+      iex>  object(
+      iex>   fields: [
+      iex>    field(
+      iex>     key: "product",
+      iex>     type: object(
+      iex>      fields: [
+      iex>       field(
+      iex>        key: "price",
+      iex>       )
+      iex>      ]
+      iex>     )
+      iex>    )
+      iex>   ]
+      iex>  )
+      ...>
+      iex> put_handler(schema, ["product", "price"], &Map.get/2)
+      object(
+        fields: [
+          field(
+            key: "product",
+            type: object(
+              fields: [
+                field(
+                  key: "price",
+                  handler: &Map.get/2
+                )
+              ]
+            )
+          )
+        ]
+      )
+  """
+  def put_handler(%JViewer.Types.Object{fields: fields} = schema, path, handler)
+      when is_list(fields) and is_list(path) do
+    JViewer.Types.Object.put(schema, path, :handler, handler)
+  end
+
+  @doc """
+  Puts __handler_params__ in __schema's field__ under given __path__.
+
+  ## Example
+      iex> import JViewer
+      ...>
+      iex> schema =
+      iex>  object(
+      iex>   fields: [
+      iex>    field(
+      iex>     key: "product",
+      iex>     type: object(
+      iex>      fields: [
+      iex>       field(
+      iex>        key: "price",
+      iex>        handler: &Map.get/2
+      iex>       )
+      iex>      ]
+      iex>     )
+      iex>    )
+      iex>   ]
+      iex>  )
+      ...>
+      iex> put_handler_params(schema, ["product", "price"], :price)
+      object(
+        fields: [
+          field(
+            key: "product",
+            type: object(
+              fields: [
+                field(
+                  key: "price",
+                  handler: &Map.get/2,
+                  handler_params: :price
+                )
+              ]
+            )
+          )
+        ]
+      )
+  """
+  def put_handler_params(%JViewer.Types.Object{fields: fields} = schema, path, params)
+      when is_list(fields) and is_list(path) do
+    JViewer.Types.Object.put(schema, path, :handler_params, params)
   end
 
   # Functions for building return schemas.
