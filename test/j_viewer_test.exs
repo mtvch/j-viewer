@@ -4,6 +4,22 @@ defmodule JViewer.Test do
 
   import JViewer
 
+  @sample_schema object(
+                   fields: [
+                     field(
+                       key: "title",
+                       handler: &JViewer.TestHelper.title_handler/2,
+                       general_hanlders_params: true
+                     )
+                   ]
+                 )
+
+  test "Uses default handler params if others not specified in schema" do
+    data = JViewer.TestHelper.get_data()
+
+    %{"title" => "Random product`"} = represent(data, @sample_schema, %{key: :title, lang: "en"})
+  end
+
   @huge_schema object(
                  fields: [
                    field(

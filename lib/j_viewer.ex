@@ -3,9 +3,11 @@ defmodule JViewer do
   JViewer is an excellent way to declaratively represent elixir data in a JSON encodable format.
   """
 
+  alias JViewer.Types.Object
+
   @type schema() :: JViewer.Types.Object.t()
 
-  @spec represent(map, schema()) :: map()
+  @spec represent(map, schema(), any()) :: map()
   @doc """
   Represents __data__ in a JSON encodable format according to __schema__.
 
@@ -40,8 +42,10 @@ defmodule JViewer do
         "title" => "Notes"
       }
   """
-  def represent(%{} = data, %JViewer.Types.Object{} = schema) do
-    JViewer.Types.Object.apply_schema(schema, data)
+  def represent(data, schema, general_handlers_params \\ %{})
+
+  def represent(%{} = data, %JViewer.Types.Object{} = schema, general_handlers_params) do
+    Object.apply_schema(schema, data, general_handlers_params)
   end
 
   @spec put_handler(schema(), list(), function()) :: schema
@@ -88,7 +92,7 @@ defmodule JViewer do
   """
   def put_handler(%JViewer.Types.Object{fields: fields} = schema, path, handler)
       when is_list(fields) and is_list(path) and path != [] and is_function(handler, 2) do
-    JViewer.Types.Object.put(schema, path, :handler, handler)
+    Object.put(schema, path, :handler, handler)
   end
 
   @spec put_handler_params(schema(), list(), any) :: schema()
@@ -137,7 +141,7 @@ defmodule JViewer do
   """
   def put_handler_params(%JViewer.Types.Object{fields: fields} = schema, path, params)
       when is_list(fields) and is_list(path) and path != [] do
-    JViewer.Types.Object.put(schema, path, :handler_params, params)
+    Object.put(schema, path, :handler_params, params)
   end
 
   # Functions for building return schemas.

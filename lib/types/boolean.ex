@@ -8,7 +8,7 @@ defmodule JViewer.Types.Boolean do
         }
 
   @impl true
-  def apply_schema(%__MODULE__{}, data) when is_boolean(data) do
+  def apply_schema(%__MODULE__{}, data, _) when is_boolean(data) do
     data
   end
 end

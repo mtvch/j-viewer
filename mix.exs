@@ -4,7 +4,7 @@ defmodule JViewer.MixProject do
   def project do
     [
       app: :j_viewer,
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -23,7 +23,8 @@ defmodule JViewer.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.24", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
     ]
   end
 

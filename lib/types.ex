@@ -7,6 +7,7 @@ defmodule JViewer.Types do
   First argument of _apply_schema_ must be a struct (schema or part of a schema)
   of a module that implements given behaviour.
   Second argumet is data schema applying to.
+  Third argument is default handler params, which can be ignored by types that are not nested
   """
-  @callback apply_schema(struct(), any()) :: any()
+  @callback apply_schema(struct(), any(), any()) :: any()
 end
