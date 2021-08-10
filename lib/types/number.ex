@@ -8,7 +8,7 @@ defmodule JViewer.Types.Number do
         }
 
   @impl true
-  def apply_schema(%__MODULE__{}, data) when is_number(data) do
+  def apply_schema(%__MODULE__{}, data, _) when is_number(data) do
     data
   end
 end

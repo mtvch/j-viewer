@@ -35,13 +35,13 @@ Add dynamic processing using __handlers__.
 defmodule MyApp.DataPresenter do
   ...
 
-  def present_for_client(data, params) do
+  def present_for_client(data, general_handlers_params) do
     schema =
       @return_schema
       |> put_handler(["nested_data", "another_nested_data"], &MyApp.DataProcessor.process/2)
-      |> put_handler_params(["nested_data", "another_nested_data"], params)
+      |> put_handler_params(["nested_data", "another_nested_data"], %{key: value})
 
-    represent(data, schema)
+    represent(data, schema, general_handlers_params)
   end
 end
 ```

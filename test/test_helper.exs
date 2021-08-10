@@ -1,5 +1,38 @@
 defmodule JViewer.TestHelper do
-  def get_huge_data() do
+  def get_data do
+    %{
+      translations: [
+        %{
+          description: nil,
+          id: 7,
+          language: "en",
+          product_id: 3,
+          short_description: nil,
+          title: "Random product"
+        },
+        %{
+          description: nil,
+          id: 8,
+          language: "fr",
+          product_id: 3,
+          short_description: nil,
+          title: "Случайный товар по французски"
+        },
+        %{
+          description: nil,
+          id: 9,
+          language: "ru",
+          product_id: 3,
+          short_description: nil,
+          title: "Случайный товар"
+        }
+      ],
+      integration_code: nil,
+      title: ""
+    }
+  end
+
+  def get_huge_data do
     %{
       coupon: nil,
       coupon_id: nil,
