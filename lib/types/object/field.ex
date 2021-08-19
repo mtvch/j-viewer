@@ -6,7 +6,7 @@ defmodule JViewer.Types.Object.Field do
     :description,
     :handler,
     :handler_params,
-    general_hanlders_params: false,
+    general_handlers_params: false,
     allow_null: false
   ]
 
@@ -20,14 +20,14 @@ defmodule JViewer.Types.Object.Field do
           description: String.t() | nil,
           handler: function() | boolean() | nil,
           handler_params: any(),
-          general_hanlders_params: boolean(),
+          general_handlers_params: boolean(),
           allow_null: boolean()
         }
 
   @impl true
   @spec apply_schema(JViewer.Types.Object.Field.t(), any, any) :: any
   def apply_schema(
-        %__MODULE__{handler: handler, general_hanlders_params: true},
+        %__MODULE__{handler: handler, general_handlers_params: true},
         super_data,
         general_handlers_params
       )
