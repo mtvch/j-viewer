@@ -181,7 +181,7 @@ defmodule JViewer.TestHelper do
     }
   end
 
-  def title_handler(%{translations: translations}, %{key: key, lang: lang}) do
+  def translations_handler(%{translations: translations}, %{key: key, lang: lang}) do
     case Enum.find(translations, fn t -> t.language == lang end) do
       nil ->
         ""

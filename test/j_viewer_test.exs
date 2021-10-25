@@ -8,8 +8,8 @@ defmodule JViewer.Test do
                    fields: [
                      field(
                        key: "title",
-                       handler: &JViewer.TestHelper.title_handler/2,
-                       general_handlers_params: true
+                       handler: &JViewer.TestHelper.translations_handler/2,
+                       handler_params: %{key: :title}
                      )
                    ]
                  )
@@ -17,7 +17,7 @@ defmodule JViewer.Test do
   test "Uses default handler params if others not specified in schema" do
     data = JViewer.TestHelper.get_data()
 
-    %{"title" => "Random product"} = represent(data, @sample_schema, %{key: :title, lang: "en"})
+    %{"title" => "Random product"} = represent(data, @sample_schema, %{lang: "en"})
   end
 
   @huge_schema object(
@@ -29,7 +29,7 @@ defmodule JViewer.Test do
                    field(
                      key: "currency_code",
                      source_key: "currency",
-                     handler: true
+                     handler: &JViewer.TestHelper.currency_code_handler/2
                    ),
                    field(
                      key: "coupon_id",
@@ -63,7 +63,8 @@ defmodule JViewer.Test do
                                      fields: [
                                        field(
                                          key: "title",
-                                         handler: true
+                                         handler: &JViewer.TestHelper.translations_handler/2,
+                                         handler_params: %{key: :title}
                                        )
                                      ]
                                    )
@@ -78,12 +79,6 @@ defmodule JViewer.Test do
   test "Parses huge data to nice and json encodable" do
     huge_data = JViewer.TestHelper.get_huge_data()
 
-    schema =
-      @huge_schema
-      |> put_handler(["currency_code"], &JViewer.TestHelper.currency_code_handler/2)
-      |> put_handler(["items", "product", "title"], &JViewer.TestHelper.title_handler/2)
-      |> put_handler_params(["items", "product", "title"], %{key: :title, lang: "en"})
-
     %{
       "coupon_id" => nil,
       "currency_code" => "AED",
@@ -96,6 +91,6 @@ defmodule JViewer.Test do
           "product" => %{"title" => "Random product"}
         }
       ]
-    } = represent(huge_data, schema)
+    } = represent(huge_data, @huge_schema, %{lang: "en"})
   end
 end

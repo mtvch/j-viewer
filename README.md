@@ -19,6 +19,10 @@ defmodule MyApp.DataPresenter do
         source_key: "data",
         type: object(
           fields: [
+            field(
+              key: "data",
+              handler: &MyApp.Handlers.data_handler/2
+            ),
             ...
           ]
         ),
@@ -36,12 +40,7 @@ defmodule MyApp.DataPresenter do
   ...
 
   def present_for_client(data, general_handlers_params) do
-    schema =
-      @return_schema
-      |> put_handler(["nested_data", "another_nested_data"], &MyApp.DataProcessor.process/2)
-      |> put_handler_params(["nested_data", "another_nested_data"], %{key: value})
-
-    represent(data, schema, general_handlers_params)
+    represent(data, @return_schema, general_handlers_params)
   end
 end
 ```
@@ -64,7 +63,7 @@ The package can be installed by adding `j_viewer` to your list of dependencies i
 ```elixir
 def deps do
   [
-    {:j_viewer, "~> 0.1.2"}
+    {:j_viewer, "~> 0.1.5"}
   ]
 end
 ```
