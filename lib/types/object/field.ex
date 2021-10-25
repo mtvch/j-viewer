@@ -5,8 +5,7 @@ defmodule JViewer.Types.Object.Field do
     :type,
     :description,
     :handler,
-    :handler_params,
-    general_handlers_params: false,
+    handler_params: %{},
     allow_null: false
   ]
 
@@ -20,30 +19,19 @@ defmodule JViewer.Types.Object.Field do
           description: String.t() | nil,
           handler: function() | boolean() | nil,
           handler_params: any(),
-          general_handlers_params: boolean(),
           allow_null: boolean()
         }
 
   @impl true
   @spec apply_schema(JViewer.Types.Object.Field.t(), any, any) :: any
   def apply_schema(
-        %__MODULE__{handler: handler, general_handlers_params: true},
+        %__MODULE__{handler: handler, handler_params: %{} = handler_params},
         super_data,
         general_handlers_params
       )
       when is_function(handler, 2) do
-    handler.(super_data, general_handlers_params)
-  end
-
-  @impl true
-  def apply_schema(%__MODULE__{handler: handler, handler_params: params}, super_data, _)
-      when is_function(handler, 2) do
+    params = Map.merge(general_handlers_params, handler_params)
     handler.(super_data, params)
-  end
-
-  @impl true
-  def apply_schema(%__MODULE__{handler: true, key: key}, _super_data, _) do
-    raise JViewer.FieldException, {:handler_not_found, key}
   end
 
   @impl true
@@ -75,6 +63,7 @@ defmodule JViewer.Types.Object.Field do
     )
   end
 
+  # if key in super_data is string
   defp apply_to_data(
          %__MODULE__{key: key} = schema,
          super_data,
@@ -96,12 +85,12 @@ defmodule JViewer.Types.Object.Field do
     apply_to_data(schema, data, general_handlers_params)
   end
 
-  defp apply_to_data(%__MODULE__{allow_null: true}, nil, _) do
-    nil
+  defp apply_to_data(%__MODULE__{allow_null: false, key: key}, nil, _) do
+    raise JViewer.FieldException, {:data_is_null, key}
   end
 
-  defp apply_to_data(%__MODULE__{key: key}, nil, _) do
-    raise JViewer.FieldException, {:data_is_null, key}
+  defp apply_to_data(_, nil, _) do
+    nil
   end
 
   defp apply_to_data(%__MODULE__{key: key}, %JViewer.FieldException{}, _) do
